@@ -12,7 +12,7 @@
             font-family: 'Courier New', Courier, monospace;
             margin: 0;
             padding: 0;
-            overflow: hidden; /* Hide scrollbars */
+            overflow-x: hidden; /* Prevent horizontal scroll */
             text-align: center;
         }
 
@@ -31,7 +31,7 @@
             padding: 40px 20px;
             max-width: 800px;
             margin: 40px auto;
-            background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black background */
+            background-color: rgba(0, 0, 0, 0.75); /* Slightly more opaque for readability */
             border: 1px solid #0F0;
             box-shadow: 0 0 15px #0F0;
         }
@@ -45,6 +45,20 @@
             box-shadow: 0 0 10px #0F0;
             margin-bottom: 20px;
         }
+        
+        /* New styles for the intro text */
+        .intro-text {
+            font-size: 1.5em;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            text-shadow: 0 0 5px #0F0; /* Add a subtle glow */
+        }
+
+        .system-status {
+            font-size: 1.1em;
+            line-height: 1.5;
+            margin-bottom: 40px; /* Space before the projects list */
+        }
 
         /* Project Item Styling */
         .project {
@@ -54,6 +68,7 @@
         .project p {
             margin: 0 0 10px 0;
             font-size: 1.1em;
+            line-height: 1.5; /* Improved readability */
         }
 
         /* Button Style */
@@ -68,10 +83,36 @@
             transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
         }
 
-        .matrix-button:hover {
+        .matrix-button:hover, .matrix-button:active { /* Added :active for mobile tap feedback */
             background-color: #0F0;
             color: #000;
             box-shadow: 0 0 10px #0F0;
+        }
+
+        /* --- Mobile Optimizations --- */
+        @media (max-width: 600px) {
+            .container {
+                width: 90%;
+                margin: 20px auto;
+                padding: 25px 15px;
+            }
+
+            .profile-photo {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .intro-text {
+                font-size: 1.3em;
+            }
+
+            .system-status {
+                font-size: 1em;
+            }
+
+            .project p {
+                font-size: 1em;
+            }
         }
     </style>
 </head>
@@ -79,8 +120,17 @@
     <canvas id="matrix-canvas"></canvas>
 
     <div class="container">
-        <img src="https://placehold.co/150x150/000000/00FF00?text=User" alt="Profile Photo" class="profile-photo">
-        <h1>Welcome to the Hub</h1>
+        <img src="https://placehold.co/150x150/000000/00FF00?text=Neo" alt="Profile Photo" class="profile-photo">
+        
+        <p class="intro-text">
+            Wake up, Neo...<br>
+            The Matrix has you.<br>
+            Follow the green code.
+        </p>
+        <p class="system-status">
+            System initialized...<br>
+            Projects ready for deployment.
+        </p>
 
         <div class="project">
             <p>A simple and effective tool for searching within Excel files.</p>
@@ -107,20 +157,29 @@
         const canvas = document.getElementById('matrix-canvas');
         const ctx = canvas.getContext('2d');
 
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
         const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
         const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         const nums = '0123456789';
         const alphabet = katakana + latin + nums;
 
-        const fontSize = 16;
-        const columns = canvas.width / fontSize;
+        let fontSize;
+        let columns;
+        let rainDrops = [];
 
-        const rainDrops = [];
-        for (let x = 0; x < columns; x++) {
-            rainDrops[x] = 1;
+        // Function to set up and reset canvas variables
+        function setupCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            // Use smaller font size on mobile for performance and aesthetics
+            fontSize = canvas.width < 600 ? 12 : 16;
+            columns = Math.floor(canvas.width / fontSize);
+
+            // Reset rainDrops array for the new number of columns
+            rainDrops = [];
+            for (let x = 0; x < columns; x++) {
+                rainDrops[x] = 1;
+            }
         }
 
         const draw = () => {
@@ -140,14 +199,16 @@
                 rainDrops[i]++;
             }
         };
+        
+        // Initial setup
+        setupCanvas();
 
-        setInterval(draw, 33);
+        // Use a less aggressive frame rate on mobile to save battery
+        const frameRate = window.innerWidth < 600 ? 50 : 33; // ~20fps on mobile, ~30fps on desktop
+        setInterval(draw, frameRate);
 
         // Adjust canvas on window resize
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        });
+        window.addEventListener('resize', setupCanvas);
     </script>
 </body>
 </html>
