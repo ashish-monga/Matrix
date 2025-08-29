@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Matrix Hub</title>
+    <style>
+        /* Basic Styles for the Matrix Theme */
+        body {
+            background-color: #000;
+            color: #0F0;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Hide scrollbars */
+            text-align: center;
+        }
+
+        /* The canvas for the digital rain effect */
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1; /* Place it behind all other content */
+        }
+
+        /* Main content container */
+        .container {
+            position: relative;
+            z-index: 1; /* Ensure content is above the canvas */
+            padding: 40px 20px;
+            max-width: 800px;
+            margin: 40px auto;
+            background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black background */
+            border: 1px solid #0F0;
+            box-shadow: 0 0 15px #0F0;
+        }
+
+        /* Profile Photo Style */
+        .profile-photo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%; /* Make it circular */
+            border: 3px solid #0F0;
+            box-shadow: 0 0 10px #0F0;
+            margin-bottom: 20px;
+        }
+
+        /* Project Item Styling */
+        .project {
+            margin-bottom: 25px;
+        }
+
+        .project p {
+            margin: 0 0 10px 0;
+            font-size: 1.1em;
+        }
+
+        /* Button Style */
+        .matrix-button {
+            background-color: transparent;
+            border: 1px solid #0F0;
+            color: #0F0;
+            padding: 10px 20px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+        }
+
+        .matrix-button:hover {
+            background-color: #0F0;
+            color: #000;
+            box-shadow: 0 0 10px #0F0;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="matrix-canvas"></canvas>
+
+    <div class="container">
+        <img src="https://placehold.co/150x150/000000/00FF00?text=User" alt="Profile Photo" class="profile-photo">
+        <h1>Welcome to the Hub</h1>
+
+        <div class="project">
+            <p>A simple and effective tool for searching within Excel files.</p>
+            <button class="matrix-button" onclick="window.open('https://ashish-monga.github.io/excel-search-tool/', '_blank')">Excel Search Tool</button>
+        </div>
+
+        <div class="project">
+            <p>An enhanced version of the Excel search tool with more features.</p>
+            <button class="matrix-button" onclick="window.open('https://ashish-monga.github.io/Excel-Search-Tool-Enhanced/', '_blank')">Enhanced Search Tool</button>
+        </div>
+
+        <div class="project">
+            <p>A handy web application to keep track of and remember birthdays.</p>
+            <button class="matrix-button" onclick="window.open('https://ashish-monga.github.io/Birthday-Reminder-/', '_blank')">Birthday Reminder</button>
+        </div>
+
+        <div class="project">
+            <p>A project to send your GPS location via SMS (direct download).</p>
+            <button class="matrix-button" onclick="window.open('https://github.com/ashish-monga/sms_my_gps/archive/refs/heads/master.zip', '_blank')">SMS My GPS (Download)</button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
+        const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const nums = '0123456789';
+        const alphabet = katakana + latin + nums;
+
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+
+        const rainDrops = [];
+        for (let x = 0; x < columns; x++) {
+            rainDrops[x] = 1;
+        }
+
+        const draw = () => {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#0F0';
+            ctx.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < rainDrops.length; i++) {
+                const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+                ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
+
+                if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    rainDrops[i] = 0;
+                }
+                rainDrops[i]++;
+            }
+        };
+
+        setInterval(draw, 33);
+
+        // Adjust canvas on window resize
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>
